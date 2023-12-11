@@ -346,56 +346,56 @@ fn solution2(start_position: &(usize, usize), pipe_matrix: &[Vec<Pipe>]) -> usiz
     let mut nodes_in_loop: HashSet<(usize, usize)> = HashSet::new();
     let mut nodes_outside_loop: HashSet<(usize, usize)> = HashSet::new();
 
-    for pipe_node in nodes_in_main_loop.iter() {
-        let mut neighbours: Vec<(usize, usize)> = Vec::new();
+    let mut neighbours: Vec<(usize, usize)> = Vec::new();
 
-        let is_top_edge = pipe_node.0 == 0;
-        let is_bottom_edge = pipe_node.0 == num_rows - 1;
-        let is_left_edge = pipe_node.1 == 0;
-        let is_right_edge = pipe_node.1 == num_cols - 1;
+    let start_position = (start_position.0 * 2, start_position.1 * 2);
 
-        if !is_top_edge {
-            neighbours.push((pipe_node.0 - 1, pipe_node.1));
+    let is_top_edge = start_position.0 == 0;
+    let is_bottom_edge = start_position.0 == num_rows - 1;
+    let is_left_edge = start_position.1 == 0;
+    let is_right_edge = start_position.1 == num_cols - 1;
 
-            if !is_left_edge {
-                neighbours.push((pipe_node.0 - 1, pipe_node.1 - 1));
-            }
-
-            if !is_right_edge {
-                neighbours.push((pipe_node.0 - 1, pipe_node.1 + 1));
-            }
-        }
-
-        if !is_bottom_edge {
-            neighbours.push((pipe_node.0 + 1, pipe_node.1));
-
-            if !is_left_edge {
-                neighbours.push((pipe_node.0 + 1, pipe_node.1 - 1));
-            }
-
-            if !is_right_edge {
-                neighbours.push((pipe_node.0 + 1, pipe_node.1 + 1));
-            }
-        }
+    if !is_top_edge {
+        neighbours.push((start_position.0 - 1, start_position.1));
 
         if !is_left_edge {
-            neighbours.push((pipe_node.0, pipe_node.1 - 1));
+            neighbours.push((start_position.0 - 1, start_position.1 - 1));
         }
 
         if !is_right_edge {
-            neighbours.push((pipe_node.0, pipe_node.1 + 1));
+            neighbours.push((start_position.0 - 1, start_position.1 + 1));
+        }
+    }
+
+    if !is_bottom_edge {
+        neighbours.push((start_position.0 + 1, start_position.1));
+
+        if !is_left_edge {
+            neighbours.push((start_position.0 + 1, start_position.1 - 1));
         }
 
-        for neighbour in neighbours {
-            if !nodes_in_main_loop.contains(&neighbour) {
-                (nodes_in_loop, nodes_outside_loop) = flood(
-                    &neighbour,
-                    &inflated_pipe_matrix,
-                    &nodes_in_main_loop,
-                    nodes_in_loop,
-                    nodes_outside_loop,
-                );
-            }
+        if !is_right_edge {
+            neighbours.push((start_position.0 + 1, start_position.1 + 1));
+        }
+    }
+
+    if !is_left_edge {
+        neighbours.push((start_position.0, start_position.1 - 1));
+    }
+
+    if !is_right_edge {
+        neighbours.push((start_position.0, start_position.1 + 1));
+    }
+
+    for neighbour in neighbours {
+        if !nodes_in_main_loop.contains(&neighbour) {
+            (nodes_in_loop, nodes_outside_loop) = flood(
+                &neighbour,
+                &inflated_pipe_matrix,
+                &nodes_in_main_loop,
+                nodes_in_loop,
+                nodes_outside_loop,
+            );
         }
     }
 
